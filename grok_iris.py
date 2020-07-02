@@ -1,55 +1,73 @@
-# Morne Venter 28634748
+#-------------------------------------------------------------------------------
+#                       Morne Venter - 28634748
+#                       Python 3.8.2
+#                       Packages Used:
+#                           - time
+#                           - numpy 1.19.0
+#-------------------------------------------------------------------------------
 
 import numpy as np
 import time
+
+#-------------------------------------------------------------------------------
+# Purely for entertainment purposes.
+waste_your_time = True
 print("=========================================================================")
-print("ETA: ~1 minutes.")
+print("ETA: ~5 minutes.")
+print("Please be patient while the computer learns...")
+print("“I am always ready to learn although I do not always like being taught.” – Winston Churchill on machine learning.")
 print("=========================================================================")
 print("Starting program ...")
-time.sleep(1)
-print("Test firing fans ...")
-time.sleep(1)
-print("Clearing out CPU cache ...")
-time.sleep(1)
-print("Inserting plutonium core ...")
-time.sleep(1)
-print("Starting nuclear reactors ...")
-time.sleep(1)
-print("Nuclear reactors at 25% capacity ...")
-time.sleep(1)
-print("Nuclear reactors at 50% capacity ...")
-time.sleep(1.2)
-print("Nuclear reactors at 70% capacity ...")
-time.sleep(1.8)
-print("Nuclear reactors at 100% functionality.")
-time.sleep(1.5)
-print("Starting dark matter drive ...")
-time.sleep(1)
-print("Dark matter drive at 100% functionality.")
-time.sleep(1)
-print("Accelerating CPU to warp speed 2 ...")
-time.sleep(1)
-print("Accelerating CPU to warp speed 6 ...")
-time.sleep(1.5)
-print("=========================================================================")
-print("Maximum warp achieved. Machine learning can begin.")
-print("=========================================================================")
-time.sleep(2)
 
+if waste_your_time:
+    time.sleep(1)
+    print("Test firing fans ...")
+    time.sleep(1)
+    print("Clearing out CPU cache ...")
+    time.sleep(1)
+    print("Inserting plutonium core ...")
+    time.sleep(1)
+    print("Starting nuclear reactors ...")
+    time.sleep(1)
+    print("Nuclear reactors at 25% capacity ...")
+    time.sleep(1)
+    print("Nuclear reactors at 50% capacity ...")
+    time.sleep(1.2)
+    print("Nuclear reactors at 70% capacity ...")
+    time.sleep(1.8)
+    print("Nuclear reactors at 100% functionality.")
+    time.sleep(1.5)
+    print("Starting dark matter drive ...")
+    time.sleep(1)
+    print("Dark matter drive at 100% functionality.")
+    time.sleep(1)
+    print("Accelerating CPU to warp speed 2 ...")
+    time.sleep(1)
+    print("Accelerating CPU to warp speed 6 ...")
+    time.sleep(1.5)
+    print("=========================================================================")
+    print("Maximum warp achieved. Machine learning can begin.")
+    print("=========================================================================")
+    time.sleep(2)
+#-------------------------------------------------------------------------------
+# Set seed
 np.random.seed(4)
 start_time = time.time()
 
+# Functions used for non-linearity
 def relu(x):
     return (x > 0) * x
 
 def relu2deriv(output):
     return output>0
 
-#mapping =
+#   mapping =
 #       Iris-setosa      = 1
 #       Iris-versicolor  = 2
 #       Iris-virginica   = 3
 
+#-------------------------------------------------------------------------------
+# Raw data from Iris dataset
 raw_data = np.array([[5.1,3.5,1.4,0.2,1],
                     [4.9,3.0,1.4,0.2,1],
                     [4.7,3.2,1.3,0.2,1],
@@ -200,34 +218,54 @@ raw_data = np.array([[5.1,3.5,1.4,0.2,1],
                     [6.5,3.0,5.2,2.0,3],
                     [6.2,3.4,5.4,2.3,3],
                     [5.9,3.0,5.1,1.8,3]]).astype(np.float32)
+#-------------------------------------------------------------------------------
 
-
+#-------------------------------------------------------------------------------
+# Partition data into input and result sets
 input_data = raw_data[:,[0,1,2,3]].astype(np.float32)
 result_data = raw_data[:,[4]].astype(np.float32)
+#-------------------------------------------------------------------------------
 
-alpha = 0.001
-hidden_size = 2048
-iterations = 11000
+#-------------------------------------------------------------------------------
+# Adjustable variables
+alpha = 0.000001
+hidden_size = 18000
+iterations = 4000
+#-------------------------------------------------------------------------------
 
+#-------------------------------------------------------------------------------
+#Init weights and error
 weights_0_1 = 2.0*np.random.random((4,hidden_size)).astype(np.float32) - 1.0
 weights_1_2 = 2.0*np.random.random((hidden_size,1)).astype(np.float32) - 1.0
-
 layer_2_error = 0
+#-------------------------------------------------------------------------------
 
+#-------------------------------------------------------------------------------
+# Begin the learning process
 for iteration in range(iterations):
     layer_2_error = 0
     for i in range(len(input_data)):
         layer_0 = input_data[i:i+1]
+        #dot product of layer 0 (input) and weights_0_1
         layer_1 = relu(np.dot(layer_0,weights_0_1))
+        #dot product of layer 1 (input) and weights_1_2
         layer_2 = np.dot(layer_1,weights_1_2)
+        #error
         layer_2_error += np.sum((layer_2 - result_data[i:i+1]) ** 2)
+        #calculate delta variables
         layer_2_delta = (layer_2 - result_data[i:i+1])
         layer_1_delta=layer_2_delta.dot(weights_1_2.T)*relu2deriv(layer_1)
+        #finally adjust the weights
         weights_1_2 -= alpha * layer_1.T.dot(layer_2_delta)
         weights_0_1 -= alpha * layer_0.T.dot(layer_1_delta)
-    if(iteration % 1000 == 9):
+    #log every 200th error calculation
+    if(iteration % 200 == 9):
         print("Error:" + str(layer_2_error))
+#-------------------------------------------------------------------------------
 
+#-------------------------------------------------------------------------------
+# Output
+print("=========================================================================")
 print("=========================================================================")
 print("Layer 0 to 1 weights: \n", weights_0_1)
 print("Layer 1 to 2 weights: \n", weights_1_2)
@@ -236,8 +274,9 @@ print("Final Error:" + str(layer_2_error))
 print("=========================================================================")
 print("Time to train: ")
 print("--- %s seconds ---" % (time.time() - start_time))
-print("=========================================================================\n")
+print("\n=========================================================================\n")
 print("========================== TESTING ======================================")
+# Dummy predictions are made here to test the accuracy.
 t_input = [5.0,3.4,1.5,0.2]
 t_output = [1]
 t_layer_1 = relu(np.dot(t_input,weights_0_1))
@@ -254,3 +293,4 @@ t_layer_1 = relu(np.dot(t_input,weights_0_1))
 t_layer_2 = np.dot(t_layer_1,weights_1_2)
 print("Using input: ", t_input,". Prediction is:", t_layer_2, ". Correct answer is ", t_output)
 print("=========================================================================")
+#-------------------------------------------------------------------------------
