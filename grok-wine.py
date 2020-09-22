@@ -13,7 +13,7 @@ np.random.seed(4)
 
 #-------------------------------------------------------------------------------
 # Purely for entertainment purposes.
-waste_your_time = False
+waste_your_time = True
 print("=========================================================================")
 print("ETA: ~5 minutes.")
 print("Please be patient while the computer learns...")
